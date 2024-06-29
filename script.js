@@ -1,18 +1,26 @@
 let button = document.getElementById("guess-button");
+let reiniciarButton = document.getElementById("reiniciar-button");
+let intentosRestantes = document.getElementById("intentos-restantes");
 let intentos = 6;
-let diccionario = ['APPLE', 'HURLS', 'WINGS', 'YOUTH'];
+let diccionario = ['APPLE', 'HURLS', 'WINGS', 'YOUTH', 'BRAVE', 'CRANE', 'DRIVE', 'EAGLE', 'FROST', 'GLORY'];
 let palabra = diccionario[Math.floor(Math.random() * diccionario.length)];
 
 window.addEventListener('load', init);
 
 function init() {
     console.log('Esto se ejecuta solo cuando se carga la pagina web');
+    intentosRestantes.innerHTML = `Intentos restantes: ${intentos}`;
 }
 
 button.addEventListener("click", intentar);
+reiniciarButton.addEventListener("click", reiniciar);
 
 function intentar() {
     const INTENTO = leerIntento();
+    if (INTENTO.length !== 5) {
+        alert("La palabra debe tener 5 letras.");
+        return;
+    }
     console.log(INTENTO);
     
     if (INTENTO === palabra) {
@@ -31,8 +39,9 @@ function intentar() {
     }
     
     intentos--;
+    intentosRestantes.innerHTML = `Intentos restantes: ${intentos}`;
     if (intentos == 0) {
-        terminar("<h1>PERDISTE!😖</h1>");
+        terminar(`<h1>PERDISTE!😖 La palabra era ${palabra}</h1>`);
     }
 
     actualizarGrid(INTENTO);
@@ -51,6 +60,7 @@ function terminar(mensaje) {
     BOTON.disabled = true;
     let contenedor = document.getElementById('guesses');
     contenedor.innerHTML = mensaje;
+    reiniciarButton.style.display = "block";
 }
 
 function actualizarGrid(INTENTO) {
@@ -75,4 +85,16 @@ function actualizarGrid(INTENTO) {
     }
 
     GRID.appendChild(ROW);
+}
+
+function reiniciar() {
+    intentos = 6;
+    palabra = diccionario[Math.floor(Math.random() * diccionario.length)];
+    document.getElementById("guess-input").disabled = false;
+    document.getElementById("guess-button").disabled = false;
+    document.getElementById("guess-input").value = '';
+    document.getElementById("guesses").innerHTML = '';
+    document.getElementById("grid").innerHTML = '';
+    intentosRestantes.innerHTML = `Intentos restantes: ${intentos}`;
+    reiniciarButton.style.display = "none";
 }
